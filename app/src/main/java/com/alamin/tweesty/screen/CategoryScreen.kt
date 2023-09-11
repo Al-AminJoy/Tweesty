@@ -5,11 +5,13 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -29,20 +31,30 @@ fun CategoryScreen(navController: NavController) {
 
     val categories = tweetViewModel.categories.collectAsState()
 
-    LazyVerticalGrid(columns = GridCells.Fixed(2), contentPadding = PaddingValues(2.dp), verticalArrangement = Arrangement.SpaceBetween){
-        items(categories.value.distinct()){
-            CategoryItem(it,navController)
+    if (categories.value.isEmpty()){
+        Box (contentAlignment = Alignment.Center, modifier = Modifier.fillMaxSize()){
+            CircularProgressIndicator()
+        }
+    }else{
+        LazyVerticalGrid(columns = GridCells.Fixed(2), contentPadding = PaddingValues(2.dp), verticalArrangement = Arrangement.SpaceBetween){
+            items(categories.value.distinct()){
+                CategoryItem(it,navController)
+            }
         }
     }
+
+
 }
 
 @Composable
 fun CategoryItem(category: String, navController: NavController) {
     Box(modifier = Modifier
         .padding(4.dp)
-        .size(160.dp).clickable {
+        .size(160.dp)
+        .clickable {
             navController.navigate("details/${category}")
-        }.background(color = Color.DarkGray)){
+        }
+        .background(color = Color.DarkGray)){
         Text(text = category.uppercase(), modifier = Modifier.align(Alignment.Center), color = Color.White)
     }
 }
